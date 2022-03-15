@@ -37,7 +37,7 @@ int main(){
                 }
                 // exit from the program.
             }else if(strcmp(check_echo_exit , "EXIT\0") == 0){
-                printf("GOODBYE");
+                printf("GOODBYE\n");
                 break;
             }
 
