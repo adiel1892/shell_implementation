@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #define PATH_MAX 1000
+#define MAX_LENGTH 1000
 
 
 int main(){
@@ -17,13 +18,13 @@ int main(){
     // running program until user insert EXIT
     while(1){
         // declaring a string for the user input.
-        char input[1000];
+        char input[MAX_LENGTH];
         printf("yes master?\n");
         fgets(input , sizeof(input) , stdin);
         // declaring a string to check if user insert "echo" or "EXIT".
         char check_echo_exit[4];
         // declaring a string for the rest of the sentence after "echo".
-        char rest_of_sentence[1000];
+        char rest_of_sentence[MAX_LENGTH];
         // checking if user insert "echo" or "EXIT".
         if(strlen(input) > 4){
             for(int i = 0; i < 4; i++){
