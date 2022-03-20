@@ -26,12 +26,12 @@ int main(){
         // declaring a string for the rest of the sentence after "echo".
         char rest_of_sentence[MAX_LENGTH];
         // checking if user insert "echo" or "EXIT".
-        if(strlen(input) > 4){
+        if(strlen(input) >= 4){
             for(int i = 0; i < 4; i++){
                 check_echo_exit[i] = *(input + i);
             }
             // printing the sentence after "echo".
-            if(strcmp(check_echo_exit , "echo\0") == 0 && input[4] == ' '){
+            if(strcmp(check_echo_exit , "ECHO\0") == 0 && input[4] == ' '){
                 for(int i = 5; i < strlen(input); i++){
                     rest_of_sentence[i] = *(input + i);
                     printf("%c" , *(input + i));
