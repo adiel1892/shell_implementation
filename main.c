@@ -42,6 +42,10 @@ int main(){
         //declaring a string to check if user insert "LOCAL".
         char user_local[6];
         strncpy(user_local, input, 5);
+        //declaring a string to check if user insert "CD".
+        char user_cd[3];
+        strncpy(user_cd , input, 2);
+
         // exit from the program.
         if(strcmp(user_echo_exit , "EXIT\0") == 0 && strlen(input) == 5){
             printf("GOODBYE\n");
@@ -78,6 +82,28 @@ int main(){
             addr.sin_addr.s_addr = inet_addr("127.0.0.1");
             connect(tcp_sock,(struct sockaddr*)&addr,sizeof(addr));
             flag = 0;        
+        // checking if user insert "CD".
+        }else if(strcmp(user_cd , "CD") == 0 && input[2] == ' '){
+            int count = 0;
+            for(int i = 3; i < strlen(input); i++){
+                rest_of_sentence[i - 3] = *(input + i);
+                count++;
+            }
+            char rest_cd[count];
+            strncpy(rest_cd , rest_of_sentence , count - 1);
+            printf("%s" , rest_cd);
+            if(chdir(rest_cd) < 0){
+                printf("No such directory.\n");
+            }else{
+                // about the question - it's a system call which is used to change the current working directory of the calling process.
+                // print the current path
+                if (getcwd(cwd, sizeof(cwd)) != NULL) {
+                    printf("Current working dir: %s\n", cwd);
+                }else{
+                    perror("getcwd() error");
+                }
+            }
+
         }else if(strlen(input) >= 4){
             for(int i = 0; i < 4; i++){
                 user_echo_exit[i] = *(input + i);

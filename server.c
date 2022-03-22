@@ -3,6 +3,7 @@
 #include<sys/socket.h>
 #include<arpa/inet.h>	//inet_addr
 #include<unistd.h>	//write
+// the base of this server is from https://www.binarytides.com/server-client-example-c-sockets-linux/
 
 int main(int argc , char *argv[])
 {
