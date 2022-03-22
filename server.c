@@ -22,6 +22,7 @@ int main(int argc , char *argv[])
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = inet_addr("127.0.0.1");
 	server.sin_port = htons(5566);
+
 	
 	//Bind
 	if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
@@ -51,19 +52,20 @@ int main(int argc , char *argv[])
 	//Receive a message from client
 	while((read_size = recv(client_sock , client_message , 2000 , 0)) > 0 )
 	{
+		if(strcmp(client_message , "LOCAL") == 0){
+			printf("Client disconnected");
+			close(socket_desc);
+			close(client_sock);
+			break;
+		// fflush(stdout);
+		}
 		//Send the message back to client
 		// write(client_sock , client_message , strlen(client_message));
         printf("%s\n" , client_message);
         memset(client_message,0,strlen(client_message));
 	}
 	
-	if(strcmp(client_message , "LOCAL") == 0)
-	{
-		puts("Client disconnected");
-		fflush(stdout);
-	}
-	else if(read_size == -1)
-	{
+	if(read_size == -1){
 		perror("recv failed");
 	}
 	

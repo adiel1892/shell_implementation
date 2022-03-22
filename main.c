@@ -43,11 +43,12 @@ int main(){
         char user_local[6];
         strncpy(user_local, input, 5);
         // exit from the program.
-        if(strcmp(user_echo_exit , "EXIT\0") == 0){
+        if(strcmp(user_echo_exit , "EXIT\0") == 0 && strlen(input) == 5){
             printf("GOODBYE\n");
             break;
         // checking if user insert "LOCAL".
         }else if(strcmp(user_local , "LOCAL") == 0){
+            send(tcp_sock , user_local , strlen(user_local), 0);
             flag = 1;
         // checking if user insert "DIR".
         }else if(strcmp(user_dir , "DIR") == 0){
@@ -63,8 +64,6 @@ int main(){
                         // send to server 
                         send(tcp_sock , dir->d_name , strlen(dir->d_name), 0);
                         usleep(100); 
-
-                    
                     }    
                 }
                 closedir(d);
@@ -86,7 +85,7 @@ int main(){
             // printing the sentence after "echo".
             if(strcmp(user_echo_exit , "ECHO\0") == 0 && input[4] == ' '){
                 for(int i = 5; i < strlen(input); i++){
-                    rest_of_sentence[i] = *(input + i);
+                    rest_of_sentence[i - 5] = *(input + i);
                     if(flag){
                         printf("%c" , *(input + i));
                     }
