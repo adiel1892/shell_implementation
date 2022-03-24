@@ -116,7 +116,7 @@ int main(){
         }else if(strcmp(user_delete_filename , "DELETE FILENAME") == 0){
 
         }else{
-            // system(input);
+            system(input);
             pid_t child_pid;
             int child_status;
             char *exec_input[2];
