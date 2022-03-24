@@ -11,7 +11,8 @@
 
 
 int main(){
-    int flag = 1;
+    int flag = 0;
+    int std_out = dup(1);
     int tcp_sock = socket(AF_INET,SOCK_STREAM,0);
     // getcwd - from stackoverflow
     char cwd[PATH_MAX];
@@ -20,14 +21,11 @@ int main(){
     }else{
         perror("getcwd() error");
     }
-
+    printf("yes master?\n");
     // running program until user insert EXIT
     while(1){
         // declaring a string for the user input.
         char input[MAX_LENGTH];
-        if(flag){
-            printf("yes master?\n");
-        }
         
         fgets(input , sizeof(input) , stdin);
         // declaring a string to check if user insert "ECHO" or "EXIT".
@@ -47,14 +45,22 @@ int main(){
         //declaring a string to check if user insert "CD".
         char user_cd[3];
         strncpy(user_cd , input, 2);
-
+        //declaring a string to check if user insert "COPY SRC DST".
+        char user_copy_src_dst[13];
+        strncpy(user_copy_src_dst , input, 12);
+        //declaring a string to check if user insert "DELETE FILENAME".
+        char user_delete_filename[16];
+        strncpy(user_delete_filename , input, 15);
+        if(flag == 1){
+            dup2(std_out,1);
+        }
         // exit from the program.
         if(strcmp(user_echo_exit , "EXIT\0") == 0 && strlen(input) == 5){
             printf("GOODBYE\n");
             break;
         // checking if user insert "LOCAL".
         }else if(strcmp(user_local , "LOCAL") == 0){
-            send(tcp_sock , user_local , strlen(user_local), 0);
+            printf("LOCAL");
             flag = 1;
         // checking if user insert "DIR".
         }else if(strcmp(user_dir , "DIR") == 0){
@@ -64,26 +70,20 @@ int main(){
             d = opendir(cwd);
             if (d) {
                 while ((dir = readdir(d)) != NULL) {
-                    if(flag == 1){
-                        printf("%s\n", dir->d_name);
-                    }else{
-                        // send to server 
-                        send(tcp_sock , dir->d_name , strlen(dir->d_name), 0);
-                        usleep(100); 
-                    }    
+                    printf("%s\n", dir->d_name);
                 }
                 closedir(d);
             }    
         // checking if user insert "TCP PORT".
         }else if(strcmp(user_tcp_port , "TCP PORT") == 0){
             // sending to server
+            dup2(tcp_sock, 1);
             int const port = 5566;
             struct sockaddr_in addr;
             addr.sin_family = AF_INET;
             addr.sin_port = htons(5566);
             addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-            connect(tcp_sock,(struct sockaddr*)&addr,sizeof(addr));
-            flag = 0;        
+            connect(tcp_sock,(struct sockaddr*)&addr,sizeof(addr));   
         // checking if user insert "CD".
         }else if(strcmp(user_cd , "CD") == 0 && input[2] == ' '){
             int count = 0;
@@ -93,7 +93,6 @@ int main(){
             }
             char rest_cd[count];
             strncpy(rest_cd , rest_of_sentence , count - 1);
-            printf("%s" , rest_cd);
             if(chdir(rest_cd) < 0){
                 printf("No such directory.\n");
             }else{
@@ -105,26 +104,38 @@ int main(){
                     perror("getcwd() error");
                 }
             }
-
-        }else if(strlen(input) >= 4){
-            for(int i = 0; i < 4; i++){
-                user_echo_exit[i] = *(input + i);
-            }
+        }
             // printing the sentence after "echo".
-            if(strcmp(user_echo_exit , "ECHO\0") == 0 && input[4] == ' '){
-                for(int i = 5; i < strlen(input); i++){
-                    rest_of_sentence[i - 5] = *(input + i);
-                    if(flag){
-                        printf("%c" , *(input + i));
-                    }
-                }
-                if(!flag){
-                    // send to server
-                    send(tcp_sock , rest_of_sentence , strlen(rest_of_sentence), 0);
-                }
+        else if(strcmp(user_echo_exit , "ECHO\0") == 0 && input[4] == ' '){
+            for(int i = 5; i < strlen(input); i++){
+                rest_of_sentence[i - 5] = *(input + i);
+                printf("%c" , *(input + i));
+            }
+        }else if(strcmp(user_copy_src_dst , "COPY SRC DST") == 0){
+
+        }else if(strcmp(user_delete_filename , "DELETE FILENAME") == 0){
+
+        }else{
+            // system(input);
+            pid_t child_pid;
+            int child_status;
+            char *exec_input[2];
+            char first_word[strlen(input)];
+            int i = 0;
+            while(input[i] != ' ' && input[i] != '\n'){
+                first_word[i] = input[i];
+                i++;
+            }
+            exec_input[0] = first_word;
+            exec_input[1] = NULL;
+            child_pid = fork();
+            if(child_pid == 0){
+                execvp(exec_input[0], exec_input);
+                printf("Unknown command\n");
+                exit(0);
+            }else{
+                wait(&child_status);
             }
         }        
-        system(input);
     }
-    
 }
