@@ -116,21 +116,45 @@ int main(){
         }else if(strcmp(user_delete_filename , "DELETE FILENAME") == 0){
 
         }else{
-            system(input);
+            // system(input);
+
+            // count number of spaces
+            int count = 0;
+            for(int w = 0; w < strlen(input); w++){
+                if(input[w] == ' ' || input[w] == '\n'){
+                    count++;
+                }
+            }
+            char *array[count + 1];
+            memset(array , '0' , strlen(input));
+            int j = 0;
+            char *p = strtok (input, " ");
+            
+            while (p != NULL)
+            {
+                array[j++] = p;
+                p = strtok (NULL, " ");
+            }
+            printf("---  %lu  ----" , sizeof(array) / sizeof(array[0]));
+            array[sizeof(array) / sizeof(array[0]) - 1] = NULL;
+
+
             pid_t child_pid;
             int child_status;
-            char *exec_input[2];
-            char first_word[strlen(input)];
-            int i = 0;
-            while(input[i] != ' ' && input[i] != '\n'){
-                first_word[i] = input[i];
-                i++;
-            }
-            exec_input[0] = first_word;
-            exec_input[1] = NULL;
+
+            // char *exec_input[2];
+            // char first_word[strlen(input)];
+            // int i = 0;
+            // while(input[i] != ' ' && input[i] != '\n'){
+            //     first_word[i] = input[i];
+            //     i++;
+            // }
+            // exec_input[0] = first_word;
+            // exec_input[1] = NULL;
+
             child_pid = fork();
             if(child_pid == 0){
-                execvp(exec_input[0], exec_input);
+                execvp(array[0], array);
                 printf("Unknown command\n");
                 exit(0);
             }else{
