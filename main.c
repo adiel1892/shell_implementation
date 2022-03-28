@@ -8,6 +8,8 @@
 #include <arpa/inet.h>
 #define PATH_MAX 1000
 #define MAX_LENGTH 1000
+#define SIZE 1
+#define NUMELEM 5
 
 
 int main(){
@@ -111,8 +113,28 @@ int main(){
                 rest_of_sentence[i - 5] = *(input + i);
                 printf("%c" , *(input + i));
             }
-        }else if(strcmp(user_copy_src_dst , "COPY SRC DST") == 0){
-
+        }else if(strcmp(user_echo_exit , "COPY") == 0){            
+            char *src_dst[3];
+            int j = 0;
+            char *p = strtok (input, " ");
+            while (p != NULL)
+            {
+                src_dst[j++] = p;
+                p = strtok (NULL, " ");
+            }
+            FILE *file, *file2;
+            char line[MAX_LENGTH];
+            file = fopen(src_dst[1], "r");
+            file2 = fopen(src_dst[2], "w");
+            if(file == NULL || file2 == NULL){
+                perror("");
+            }else{
+                while (fgets(line,sizeof(line),file) != NULL){
+                    fputs(line, file2);
+                }
+                fclose (file);
+                fclose (file2);
+            }
         }else if(strcmp(user_delete_filename , "DELETE FILENAME") == 0){
 
         }else{
