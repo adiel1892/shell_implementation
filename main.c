@@ -31,8 +31,8 @@ int main(){
         
         fgets(input , sizeof(input) , stdin);
         // declaring a string to check if user insert "ECHO" or "EXIT".
-        char user_echo_exit[5];
-        strncpy(user_echo_exit, input, 4);
+        char user_echo_exit_copy[5];
+        strncpy(user_echo_exit_copy, input, 4);
         //declaring a string to check if user insert "DIR".
         char user_dir[4];
         strncpy(user_dir, input, 3);
@@ -47,17 +47,14 @@ int main(){
         //declaring a string to check if user insert "CD".
         char user_cd[3];
         strncpy(user_cd , input, 2);
-        //declaring a string to check if user insert "COPY SRC DST".
-        char user_copy_src_dst[13];
-        strncpy(user_copy_src_dst , input, 12);
-        //declaring a string to check if user insert "DELETE FILENAME".
-        char user_delete_filename[16];
-        strncpy(user_delete_filename , input, 15);
+        //declaring a string to check if user insert "DELETE".
+        char user_delete[7];
+        strncpy(user_delete , input, 6);
         if(flag == 1){
             dup2(std_out,1);
         }
         // exit from the program.
-        if(strcmp(user_echo_exit , "EXIT\0") == 0 && strlen(input) == 5){
+        if(strcmp(user_echo_exit_copy , "EXIT\0") == 0 && strlen(input) == 5){
             printf("GOODBYE\n");
             break;
         // checking if user insert "LOCAL".
@@ -108,12 +105,12 @@ int main(){
             }
         }
             // printing the sentence after "echo".
-        else if(strcmp(user_echo_exit , "ECHO\0") == 0 && input[4] == ' '){
+        else if(strcmp(user_echo_exit_copy , "ECHO\0") == 0 && input[4] == ' '){
             for(int i = 5; i < strlen(input); i++){
                 rest_of_sentence[i - 5] = *(input + i);
                 printf("%c" , *(input + i));
             }
-        }else if(strcmp(user_echo_exit , "COPY") == 0){            
+        }else if(strcmp(user_echo_exit_copy , "COPY") == 0 && input[4] == ' '){            
             char *src_dst[3];
             int j = 0;
             char *p = strtok (input, " ");
@@ -135,7 +132,20 @@ int main(){
                 fclose (file);
                 fclose (file2);
             }
-        }else if(strcmp(user_delete_filename , "DELETE FILENAME") == 0){
+        }else if(strcmp(user_delete , "DELETE") == 0 && input[6] == ' '){
+            char *delete[2];
+            int j = 0;
+            char *p = strtok (input, " ");
+            while (p != NULL)
+            {
+                delete[j++] = p;
+                p = strtok (NULL, " ");
+            }
+            char *path = delete[1];
+            if(unlink(path) == -1){
+                perror("");
+            }
+     
 
         }else{
             // system(input);
