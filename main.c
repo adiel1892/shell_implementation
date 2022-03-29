@@ -8,8 +8,7 @@
 #include <arpa/inet.h>
 #define PATH_MAX 1000
 #define MAX_LENGTH 1000
-#define SIZE 1
-#define NUMELEM 5
+
 
 
 int main(){
@@ -119,6 +118,8 @@ int main(){
                 src_dst[j++] = p;
                 p = strtok (NULL, " ");
             }
+            // printf("%s\n" , src_dst[1]);
+            // printf("%s\n" , src_dst[2]);
             FILE *file, *file2;
             char line[MAX_LENGTH];
             file = fopen(src_dst[1], "r");
@@ -131,25 +132,20 @@ int main(){
                 }
                 fclose (file);
                 fclose (file2);
+                printf("check - close");
             }
         }else if(strcmp(user_delete , "DELETE") == 0 && input[6] == ' '){
-            char *delete[2];
-            int j = 0;
-            char *p = strtok (input, " ");
-            while (p != NULL)
-            {
-                delete[j++] = p;
-                p = strtok (NULL, " ");
+            char for_delete[strlen(input) - 6];
+            for(int i = 7; i < strlen(input); i++){
+                for_delete[i - 7] = *(input + i);
             }
-            char *path = delete[1];
-            if(unlink(path) == -1){
+            if(unlink(for_delete) == -1){
                 perror("");
+            }else{
+                printf("deleating %s" , for_delete);
             }
-     
-
         }else{
             // system(input);
-
             // count number of spaces
             int count = 0;
             for(int w = 0; w < strlen(input); w++){
@@ -167,10 +163,7 @@ int main(){
                 array[j++] = p;
                 p = strtok (NULL, " ");
             }
-            printf("---  %lu  ----" , sizeof(array) / sizeof(array[0]));
             array[sizeof(array) / sizeof(array[0]) - 1] = NULL;
-
-
             pid_t child_pid;
             int child_status;
 
