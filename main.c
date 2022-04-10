@@ -109,7 +109,9 @@ int main(){
                 rest_of_sentence[i - 5] = *(input + i);
                 printf("%c" , *(input + i));
             }
-        }else if(strcmp(user_echo_exit_copy , "COPY") == 0 && input[4] == ' '){            
+        }else if(strcmp(user_echo_exit_copy , "COPY") == 0 && input[4] == ' '){         
+            // about the question - the fopen() , fwrite() and fread() are all library function.
+            // The difference between fopen and open is that fopen is a library function while open is a system call.   
             char *src_dst[3];
             int j = 0;
             char *p = strtok (input, " ");
@@ -135,6 +137,7 @@ int main(){
                 printf("check - close");
             }
         }else if(strcmp(user_delete , "DELETE") == 0 && input[6] == ' '){
+            // about the question - unlink is a system call and a command line utility to delete files.
             char for_delete[strlen(input) - 6];
             for(int i = 7; i < strlen(input); i++){
                 for_delete[i - 7] = *(input + i);
