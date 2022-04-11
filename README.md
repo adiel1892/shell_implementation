@@ -1,4 +1,8 @@
 # shell_implementation
+Creators:
+Adiel Ben Meir - 315504910
+Yarin Hindi - 313357337
+
 In this task we implementing a linux shell.
 we implement the methods:
 dir , cd , copy file , delete file , tcp port , local , echo , exit.
